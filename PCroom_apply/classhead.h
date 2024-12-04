@@ -34,13 +34,15 @@ public:
 //预约信息
 class Applyinfo {
 public:
-	int p_num;
+	int a_num;
+	User user;
+	Pcroom pcroom;
 	int u_num;
 	//预约时间：11,12,21,22
 	int a_info;
-	int inuse;
+	int inuse;//审核通过
 
 	Applyinfo();
-	Applyinfo(int p_num, int u_num, int a_info);
+	Applyinfo(int a_num, User& user, Pcroom& pcroom, int a_info);
 };
 

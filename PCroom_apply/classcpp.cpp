@@ -17,10 +17,11 @@ Pcroom::Pcroom(int p_num, char* p_name) {
 
 
 Applyinfo::Applyinfo(){}
-Applyinfo::Applyinfo(int p_num, int u_num, int a_info) {
-	this->p_num = p_num;
-	this->u_num = u_num;
+Applyinfo::Applyinfo(int a_num, User& user, Pcroom& pcroom, int a_info) {
+	this->a_num = a_num;
+	this->user = user;
+	this->pcroom = pcroom;
 	this->a_info = a_info;
-	this->inuse = 1;//0否1是
+	this->inuse = 1;//审核通过，0否1是
 }
 

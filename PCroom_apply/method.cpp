@@ -127,7 +127,72 @@ void setmenu2(string u_name, string u_pwd) {
 
 	else {
 		//从文件中获取对象信息
+		int num = 0;
+		vector<User> vu = readfromFile(num);
+		int isexist = 0;
+		for (vector<User>::iterator it = vu.begin(); it != vu.end(); it++) {
+			//存储方案：num name pwd priv
+			if (u_name == (*it).u_name && u_pwd == (*it).u_pwd) {
+				isexist = 1;
+				loginuser = (*it);
+			}
+		}
+		if (isexist == 0) {
+			cout << "用户名或密码错误" << endl;
+			system("pause");
+			setmenu2(u_name, u_pwd);
+		}
+		else {
+			if (loginuser.priv == 1) {//登录的是老师
+				cout << "*****************************************************" << endl;
+				cout << "**********欢迎登录，您的当前身份是：老师**********" << endl;
+				cout << "*****************请选择要执行的操作****************" << endl;
+				cout << "********************1，查看预约*********************" << endl;
+				cout << "********************2，审核预约*********************" << endl;
+				cout << "********************3，退出登陆*********************" << endl;
 
+				int inputdata = 0;
+				cin >> inputdata;
+				if (inputdata == 1) {
+					
+				}
+				else if (inputdata == 2) {
+					
+				}
+				else if (inputdata == 3) {
+					
+				}
+			}
+			else if (loginuser.priv == 2) {//登录的是学生
+				cout << "*****************************************************" << endl;
+				cout << "**********欢迎登录，您的当前身份是：学生**********" << endl;
+				cout << "*****************请选择要执行的操作****************" << endl;
+				cout << "********************1，申请预约*********************" << endl;
+				cout << "*****************2，查看我的预约********************" << endl;
+				cout << "*****************3，查看所有预约********************" << endl;
+				cout << "********************4，取消预约*********************" << endl;
+				cout << "********************5，退出登陆*********************" << endl;
+
+				int inputdata = 0;
+				cin >> inputdata;
+				if (inputdata == 1) {
+
+				}
+				else if (inputdata == 2) {
+
+				}
+				else if (inputdata == 3) {
+
+				}
+				else if (inputdata == 4) {
+
+				}
+				else if (inputdata == 5) {
+
+				}
+
+			}
+		}
 	}
 }
 
@@ -139,7 +204,7 @@ void adduser() {
 	readfromFile(the_num);
 
 	if (priv != 1 && priv != 2) {
-		cout << "输入的指令码不存在<<";
+		cout << "输入的指令码不存在"<<endl;
 		system("pause");
 		adduser();
 	}
