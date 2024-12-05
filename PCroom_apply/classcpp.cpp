@@ -22,6 +22,7 @@ Applyinfo::Applyinfo(int a_num, User& user, Pcroom& pcroom, int a_info) {
 	this->user = user;
 	this->pcroom = pcroom;
 	this->a_info = a_info;
-	this->inuse = 1;//审核通过，0否1是
+	this->inuse = 0;//审核通过，0否1是
+	this->isable = 1;
 }
 

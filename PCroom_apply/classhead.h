@@ -37,10 +37,10 @@ public:
 	int a_num;
 	User user;
 	Pcroom pcroom;
-	int u_num;
 	//预约时间：11,12,21,22
 	int a_info;
-	int inuse;//审核通过
+	int inuse;//审核通过1通过0不通过
+	int isable;//1可用0不可用
 
 	Applyinfo();
 	Applyinfo(int a_num, User& user, Pcroom& pcroom, int a_info);

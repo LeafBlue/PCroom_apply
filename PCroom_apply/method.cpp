@@ -35,7 +35,7 @@ void initpcroom() {
 	ofs.close();
 }
 
-//读取csv文件
+//读取机房文件
 vector<Pcroom> getpcroom() {
 	vector<Pcroom> v_pcroom;
 	ifstream ifs("pcroom.csv", ios::in);
@@ -54,6 +54,9 @@ vector<Pcroom> getpcroom() {
 	ifs.close();
 	return v_pcroom;
 }
+
+
+
 
 void setmenu2(string u_name, string u_pwd) {
 	if (u_name == "admin" && u_pwd == "123456") {
@@ -154,13 +157,48 @@ void setmenu2(string u_name, string u_pwd) {
 				int inputdata = 0;
 				cin >> inputdata;
 				if (inputdata == 1) {
-					
+					vector<Applyinfo> vap = readapplyfile();
+					for (vector<Applyinfo>::iterator it = vap.begin();it != vap.end(); it++) {
+						if ((*it).isable == 1) {
+							cout << "预约编号：" << (*it).a_num << "\t";
+							cout << "用户名：" << (*it).user.u_name << "\t";
+							cout << "预约机房：" << (*it).pcroom.p_name << "\t";
+							cout << "预约时间：" << getapplytime((*it).a_info) << "\t";
+							cout << "审核情况：" << ((*it).inuse == 0) ? "未通过" : "通过" << "\t";
+						}
+					}
+					system("pause");
+					setmenu2(u_name, u_pwd);
 				}
 				else if (inputdata == 2) {
-					
+					cout << "请输入你要通过的预约编号" << endl;
+					int cross;
+					cin << cross;
+					vector<Applyinfo> vap = readapplyfile();
+					for (vector<Applyinfo>::iterator it = vap.begin();it != vap.end(); it++) {
+						if ((*it).isable == 1 && (*it).a_num == cross) {
+							if ((*it).inuse == 0) {
+								(*it).inuse = 1;
+
+								//删除源文件，将vector重新写入新的文件
+								saveapply2(vap);
+
+							}
+							else {
+								cout << "这一项已经审核通过了。" << endl;
+								system("pause");
+								setmenu2(u_name, u_pwd);
+							}
+						}
+					}
+					system("pause");
+					setmenu2(u_name, u_pwd);
 				}
 				else if (inputdata == 3) {
-					
+					loginuser = User();
+					cout << "退出登陆..." << endl;
+					system("pause");
+					setmenu1();
 				}
 			}
 			else if (loginuser.priv == 2) {//登录的是学生
@@ -176,24 +214,153 @@ void setmenu2(string u_name, string u_pwd) {
 				int inputdata = 0;
 				cin >> inputdata;
 				if (inputdata == 1) {
-
+					stuapply();
+					cout << "预约成功。" << endl;
+					system("pause");
+					setmenu2(u_name, u_pwd);
 				}
 				else if (inputdata == 2) {
-
+					vector<Applyinfo> vap = readapplyfile();
+					for (vector<Applyinfo>::iterator it = vap.begin();it != vap.end(); it++) {
+						if ((*it).user.u_num = loginuser.u_num && (*it).isable == 1) {
+							cout << "预约编号：" << (*it).a_num << "\t";
+							cout << "用户名：" << (*it).user.u_name << "\t";
+							cout << "预约机房：" << (*it).pcroom.p_name << "\t";
+							cout << "预约时间：" << getapplytime((*it).a_info)<< "\t";
+							cout << "审核情况：" << ((*it).inuse == 0) ? "未通过" : "通过" << "\t";
+						}
+					}
+					system("pause");
+					setmenu2(u_name, u_pwd);
 				}
 				else if (inputdata == 3) {
-
+					vector<Applyinfo> vap = readapplyfile();
+					for (vector<Applyinfo>::iterator it = vap.begin();it != vap.end(); it++) {
+						if ((*it).isable == 1) {
+							cout << "预约编号：" << (*it).a_num << "\t";
+							cout << "用户名：" << (*it).user.u_name << "\t";
+							cout << "预约机房：" << (*it).pcroom.p_name << "\t";
+							cout << "预约时间：" << getapplytime((*it).a_info) << "\t";
+							cout << "审核情况：" << ((*it).inuse == 0) ? "未通过" : "通过" << "\t";
+						}
+					}
+					system("pause");
+					setmenu2(u_name, u_pwd);
 				}
 				else if (inputdata == 4) {
+					cout << "请输入你要取消预约的预约编号：" << endl;
+					int delanum;
+					cin << delanum;
+					vector<Applyinfo> vap = readapplyfile();
+					for (vector<Applyinfo>::iterator it = vap.begin();it != vap.end(); it++) {
+						if ((*it).isable == 1 && (*it).a_num == delanum) {
+							if ((*it).user.u_num == loginuser.u_num) {
+								(*it).isable = 0;
 
+								//删除源文件，将vector重新写入新的文件
+								saveapply2(vap);
+
+							}
+							else {
+								cout << "这不是你的预约，你无权取消！" << endl;
+								system("pause");
+								setmenu2(u_name, u_pwd);
+							}
+						}
+					}
+					system("pause");
+					setmenu2(u_name, u_pwd);
 				}
 				else if (inputdata == 5) {
-
+					loginuser = User();
+					cout << "退出登陆..." << endl;
+					system("pause");
+					setmenu1();
 				}
 
 			}
 		}
 	}
+}
+
+string getapplytime(int &applytime) {
+	string strtime;
+	if (applytime == 11) { return "周一上午"; }
+	else if (applytime == 12) { return "周一下午"; }
+	else if (applytime == 21) { return "周二上午"; }
+	else if (applytime == 22) { return "周二下午"; }
+	else if (applytime == 31) { return "周三上午"; }
+	else if (applytime == 32) { return "周三下午"; }
+	else if (applytime == 41) { return "周四上午"; }
+	else if (applytime == 42) { return "周四下午"; }
+	else if (applytime == 51) { return "周五上午"; }
+	else if (applytime == 52) { return "周五下午"; }
+}
+
+void stuapply() {
+	vector<Applyinfo> vap = readapplyfile();
+	cout << "请输入你要预约的机房号码：" << endl;
+	cout << "1号机房，2号机房，3号机房" << endl;
+	int pcroomdata;
+	cin >> pcroomdata;
+	cout << "当前机房预约情况：" << endl;
+	map<int, int> m_apply = coutapply(pcroomdata);
+	cout << "时间/日期\t周  一\t周  二\t周  三\t周  四\t周  五\t" << endl;
+	cout << "上午\t";
+	cout << m_apply[11] == 0 ? "11 可预约" : "11 不可预约" << "\t";
+	cout << m_apply[21] == 0 ? "21 可预约" : "21 不可预约" << "\t";
+	cout << m_apply[31] == 0 ? "31 可预约" : "31 不可预约" << "\t";
+	cout << m_apply[41] == 0 ? "41 可预约" : "41 不可预约" << "\t";
+	cout << m_apply[51] == 0 ? "51 可预约" : "51 不可预约" << "\t";
+	cout << endl;
+	cout << "下午\t";
+	cout << m_apply[11] == 0 ? "12 可预约" : "12 不可预约" << "\t";
+	cout << m_apply[21] == 0 ? "22 可预约" : "22 不可预约" << "\t";
+	cout << m_apply[31] == 0 ? "32 可预约" : "32 不可预约" << "\t";
+	cout << m_apply[41] == 0 ? "42 可预约" : "42 不可预约" << "\t";
+	cout << m_apply[51] == 0 ? "52 可预约" : "52 不可预约" << "\t";
+	cout << endl;
+
+	cout << "请输入你要预约的时段对应号码：" << endl;
+	int applytime;
+	cin >> applytime;
+	if (m_apply[applytime] == 0) {
+		Applyinfo newapply;
+		newapply.a_num = vap.size() + 1;
+		newapply.inuse = 0;
+		newapply.a_info = applytime;
+		newapply.user = loginuser;
+		Pcroom tem_p;
+		tem_p.p_num = pcroomdata;
+		if (pcroomdata == 1) { strcpy_s(tem_p.p_name, "1号机房"); }
+		else if (pcroomdata == 2) { strcpy_s(tem_p.p_name, "2号机房"); }
+		else if (pcroomdata == 3) { strcpy_s(tem_p.p_name, "3号机房"); }
+		newapply.pcroom = tem_p;
+		newapply.isable = 1;
+		saveapplyfile(newapply);
+	}
+	else {
+		cout << "输入的时段不可预约！" << endl;
+		system("pause");
+		stuapply();
+	}
+}
+
+map<int, int> coutapply(int &pcroomdata) {
+	vector<Applyinfo> vapp = readapplyfile();
+	map<int, int> m;
+	//0代表审核未通过，可以预约
+	m[11] = 0;m[21] = 0;m[31] = 0;m[41] = 0;m[51] = 0;
+	m[12] = 0;m[22] = 0;m[32] = 0;m[42] = 0;m[52] = 0;
+	if (vapp.size() > 0) {
+		for (vector<Applyinfo>::iterator it = vapp.begin();it != vapp.end(); it++) {
+			if ((*it).pcroom.p_num == pcroomdata && (*it).inuse == 1 && (*it).isable ==1) {
+				m[(*it).a_info] = 1;
+			}
+		}
+	}
+	
+	return m;
 }
 
 void adduser() {
@@ -257,6 +424,8 @@ vector<User> readfromFile(int &the_num) {
 			strcpy(u.u_pwd, (*(it + 2)).c_str());
 			u.priv = stoi(*(it + 3));
 
+
+
 			v.push_back(u);
 			the_num++;
 		}
@@ -275,6 +444,109 @@ void addinfile(User &adduser) {
 
 	ofs.close();
 }
+
+//读取预约文件
+vector<Applyinfo> readapplyfile() {
+	vector<Applyinfo> vapply;
+	//如果文件不存在则创建文件
+	ofstream ofs("applyinfo.csv", ios::out | ios::app);
+	ofs.close();
+
+	ifstream ifs;
+	
+	char ch;
+	ifs >> ch;
+	ifs.open("applyinfo.csv", ios::in);
+	if (ifs.eof()) {
+		the_num = 0;
+		return v;
+	}
+	while (getline(ifs, line)) {
+		vector<string> vstr = splitstr(line, ',');
+		vector<string>::iterator it = vstr.begin();
+		Applyinfo ap;
+		ap.a_num = stoi(*it);
+
+		User user;
+		user.u_num = stoi(*(it + 1));
+		strcpy_s(user.u_name, *(it + 2));
+		strcpy_s(user.u_pwd, *(it + 3));
+		user.priv = stoi(*(it + 4));
+		ap.user = user;
+
+		Pcroom p;
+		p.p_num = stoi(*(it + 5));
+		strcpy_s(p.p_name, *(it + 6));
+		ap.pcroom = p;
+
+		ap.a_info = stoi(*(it + 7));
+		ap.inuse = stoi(*(it + 8));
+		ap.isable = stoi(*(it + 9));
+		vapply.push_back(ap);
+	}
+
+	return vapply;
+}
+
+//将vector写入预约文件
+void saveapply2(vector<Applyinfo> &v) {
+	ofstream ofs;
+	ofs.open("applyinfo.csv", ios::out | ios::trunc);
+
+	if (ofs.is_open()) {
+		for (vector<Applyinfo>::iterator it = v.begin();it != v.end();it++) {
+			ofs << (*it).a_num << ",";
+
+			User user = (*it).user;
+			ofs << user.u_num << ",";
+			ofs << user.u_name << ",";
+			ofs << user.u_pwd << ",";
+			ofs << user.priv << ",";
+
+			Pcroom p = (*it).pcroom;
+			ofs << p.p_num << ",";
+			ofs << p.p_name << ",";
+
+			ofs << (*it).a_info << ",";
+			ofs << (*it).inuse << ",";
+			ofs << (*it).isable << endl;
+		}
+	}
+	else {
+		cout << "文件打开失败" << endl;
+	}
+}
+
+
+//写入预约文件
+void saveapplyfile(Applyinfo & applyinfo) {
+	ofstream ofs;
+	ofs.open("applyinfo.csv", ios::out | ios::app);
+
+	if (ofs.is_open()) {
+		ofs << applyinfo.a_num << ",";
+
+		User user = applyinfo.user;
+		ofs << user.u_num << ",";
+		ofs << user.u_name << ",";
+		ofs << user.u_pwd << ",";
+		ofs << user.priv << ",";
+
+		Pcroom p = applyinfo.pcroom;
+		ofs << p.p_num << ",";
+		ofs << p.p_name << ",";
+
+		ofs << applyinfo.a_info << ",";
+		ofs << applyinfo.inuse << ","; 
+		ofs << applyinfo.isable<< endl;
+	}
+	else {
+		cout << "文件打开失败" << endl;
+	}
+
+	ofs.close();
+}
+
 
 //根据逗号截取字符串
 vector<string> splitstr(string str, char keyword) {
